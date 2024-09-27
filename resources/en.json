@@ -1,0 +1,28 @@
+{
+  "HomePage": {
+    "title": "Home Page"
+  },
+  "AccessDeniedPage": {
+    "title": "You don't have permission to access this page",
+    "buttonLabel": "Home page"
+  },
+  "General": {
+    "cancel": "Cancel",
+    "apply": "Apply",
+    "reset": "Reset",
+    "filter": "Filter",
+    "add": "Add",
+    "save": "Save",
+    "submit": "Submit",
+    "edit": "Edit",
+    "discard": "Discard",
+    "create": "Create",
+    "startDate": "Start Date",
+    "endDate": "End Date",
+    "logout": "Logout",
+    "accept": "Accept",
+    "approve": "Approve",
+    "confirm": "Confirm",
+    "ok": "Ok"
+  }
+}

@@ -11,7 +11,7 @@ export const DayMonthYearFormat = 'DD/MM/YYYY';
 export const MonthDayYearFormat = 'MM/DD/YYYY';
 export const MonthDayYearTimeFormat = 'MMM DD, YYYY HH:mm:ss';
 
-export const DatetimeFormat = 'MMM DD, YYYY HH:mm:ss';
+export const DatetimeFormat = 'HH:mm MMM DD';
 
 originalDayjs.locale();
 

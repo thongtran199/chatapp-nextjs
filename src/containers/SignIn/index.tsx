@@ -1,13 +1,9 @@
 'use client';
 
-import { Input, Select, Form } from 'antd';
-import { Flex } from '@/components/Flex';
-import { Text } from '@/components/Text';
+import { Input, Form, Flex, Button } from 'antd';
 import { useTranslations } from 'next-intl';
-import CheckBox from '@/components/Checkbox';
 import { ArrowRightOutlined } from '@ant-design/icons';
-import { Button } from '@/components/Button';
-import { Link } from '@/components/Navigation';
+import { useRouter } from '@/components/Navigation';
 import { FormProps } from 'antd/lib';
 import { useForm } from 'antd/es/form/Form';
 import { signInAsync } from './thunks';
@@ -19,7 +15,6 @@ import ModalView from '@/components/ModalView';
 import { useState } from 'react';
 import { selectCurrentSignInStatus, selectErrorMessage } from './selectors';
 import { ApiStatus } from '@/common/enums/apiStatus';
-import { useRouter } from '@/components/Navigation';
 import { SignInRequest } from '@/common/models/signIn';
 
 export default function SignIn() {
@@ -86,7 +81,7 @@ export default function SignIn() {
                   },
                 ]}
               >
-                <Input maxLength={50} placeholder={t('fullName')} />
+                <Input maxLength={50} placeholder={t('usernameOrEmail')} />
               </Form.Item>
 
               <Form.Item

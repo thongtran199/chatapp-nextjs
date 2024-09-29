@@ -5,6 +5,11 @@ export interface FoundUser {
   fullName: string;
   username: string;
   avatarUrl?: string;
+  friendshipFoundUserResponseDTO?: FriendshipFoundUserResponseDTO;
+}
+export interface FriendshipFoundUserResponseDTO {
+  friendshipId: number;
   friendshipStatus: FriendshipStatus;
-  requesterId?: number;
+  requesterId: number;
+  requestedUserId: number;
 }

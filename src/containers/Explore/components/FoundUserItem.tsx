@@ -1,102 +1,171 @@
 import React from 'react';
-import { Avatar, Button, Flex, Space, Typography } from 'antd';
+import { Avatar, Button, Flex, Typography } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import { FoundUser } from '@/common/models/explore';
-import { useDispatch } from '@/lib/redux';
 import {
   acceptFriendRequestAsync,
   declineFriendRequestAsync,
+  revokeFriendRequestAsync,
   sendFriendRequestAsync,
+  unFriendAsync,
 } from '@/containers/Friend/thunks';
 import { AddFriendRequest } from '@/common/models/friend';
 import User from '@/services/user';
 import { FriendshipStatus } from '@/common/enums/friendshipStatus';
+import useFriendshipDispatch from '../hooks/useFriendDispatch';
 
 const { Text } = Typography;
 
 interface FoundUserItemProps {
   user: FoundUser;
+  callDispatch: any;
 }
 
-const FoundUserItem: React.FC<FoundUserItemProps> = ({ user }) => {
-  const dispatch = useDispatch();
+const FoundUserItem: React.FC<FoundUserItemProps> = ({
+  user,
+  callDispatch,
+}: {
+  user: FoundUser;
+  callDispatch: any;
+}) => {
+  const { executeAction } = useFriendshipDispatch();
 
-  const handleSendFriendRequest = () => {
+  const handleSendFriendRequest = async () => {
     const addFriendRequest: AddFriendRequest = {
       requesterId: Number(User.getInstance().getUserId()),
       requestedUserId: user.userId,
     };
-    dispatch(sendFriendRequestAsync(addFriendRequest));
+    executeAction(sendFriendRequestAsync, addFriendRequest, callDispatch);
   };
 
-  const handleAcceptFriendRequest = () => {
-    const acceptFriendRequest = {
-      requesterId: user.userId,
-      requestedUserId: Number(User.getInstance().getUserId()),
-    };
-    dispatch(acceptFriendRequestAsync(acceptFriendRequest));
+  const handleAcceptFriendRequest = async () => {
+    if (!user.friendshipFoundUserResponseDTO) return;
+    executeAction(
+      acceptFriendRequestAsync,
+      user.friendshipFoundUserResponseDTO.friendshipId,
+      callDispatch,
+    );
   };
 
-  const handleDeclineFriendRequest = () => {
-    const declineFriendRequest = {
-      requesterId: user.userId,
-      requestedUserId: Number(User.getInstance().getUserId()),
-    };
-    dispatch(declineFriendRequestAsync(declineFriendRequest));
+  const handleDeclineFriendRequest = async () => {
+    if (!user.friendshipFoundUserResponseDTO) return;
+    executeAction(
+      declineFriendRequestAsync,
+      user.friendshipFoundUserResponseDTO.friendshipId,
+      callDispatch,
+    );
+  };
+
+  const handleRevokeFriendRequest = async () => {
+    if (!user.friendshipFoundUserResponseDTO) return;
+    executeAction(
+      revokeFriendRequestAsync,
+      user.friendshipFoundUserResponseDTO.friendshipId,
+      callDispatch,
+    );
+  };
+
+  const handleUnfriend = async () => {
+    executeAction(
+      unFriendAsync,
+      {
+        userId1: user.userId,
+        userId2: Number(User.getInstance().getUserId()),
+      },
+      callDispatch,
+    );
   };
 
   const actions = () => {
-    if (user.friendshipStatus === FriendshipStatus.NONE) {
+    if (!user.friendshipFoundUserResponseDTO) {
       return (
-        <Button type="primary" onClick={handleSendFriendRequest}>
+        <Button
+          type="primary"
+          className="min-w-36"
+          onClick={handleSendFriendRequest}
+        >
           Thêm bạn bè
         </Button>
       );
     } else if (
-      user.friendshipStatus === FriendshipStatus.PENDING &&
-      user.requesterId != Number(User.getInstance().getUserId())
+      user.friendshipFoundUserResponseDTO.friendshipStatus ===
+        FriendshipStatus.UNFRIEND ||
+      user.friendshipFoundUserResponseDTO.friendshipStatus ===
+        FriendshipStatus.REVOKED ||
+      user.friendshipFoundUserResponseDTO.friendshipStatus ===
+        FriendshipStatus.DECLINED
+    ) {
+      return (
+        <Button
+          type="primary"
+          className="min-w-36"
+          onClick={handleSendFriendRequest}
+        >
+          Thêm bạn bè
+        </Button>
+      );
+    } else if (
+      user.friendshipFoundUserResponseDTO.friendshipStatus ===
+        FriendshipStatus.PENDING &&
+      user.friendshipFoundUserResponseDTO.requesterId !==
+        Number(User.getInstance().getUserId())
     ) {
       return (
         <Flex gap={3}>
-          <Button type="primary" onClick={handleDeclineFriendRequest}>
+          <Button className="min-w-36" onClick={handleDeclineFriendRequest}>
             Từ chối
           </Button>
-          <Button type="primary" onClick={handleAcceptFriendRequest}>
+          <Button
+            type="primary"
+            className="min-w-36"
+            onClick={handleAcceptFriendRequest}
+          >
             Chấp nhận
           </Button>
         </Flex>
       );
-    } else {
-      return null;
+    } else if (
+      user.friendshipFoundUserResponseDTO.friendshipStatus ===
+        FriendshipStatus.PENDING &&
+      user.friendshipFoundUserResponseDTO.requesterId ===
+        Number(User.getInstance().getUserId())
+    ) {
+      return (
+        <Button onClick={handleRevokeFriendRequest} className="min-w-36">
+          Hủy lời mời
+        </Button>
+      );
+    } else if (
+      user.friendshipFoundUserResponseDTO.friendshipStatus ===
+      FriendshipStatus.ACCEPTED
+    ) {
+      return (
+        <Button className="min-w-36" onClick={handleUnfriend}>
+          Hủy kết bạn
+        </Button>
+      );
     }
+
+    return null;
   };
 
   return (
-    <Space
-      direction="horizontal"
-      align="center"
-      className="found-user-item"
-      style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        padding: '10px',
-        borderBottom: '1px solid #f0f0f0',
-        width: '100%',
-      }}
-    >
-      <Space direction="horizontal" align="center" size={16}>
+    <Flex align="center" justify="space-between" className="py-3 px-3">
+      <Flex>
         <Avatar
           src={user.avatarUrl || undefined}
           icon={!user.avatarUrl ? <UserOutlined /> : null}
           size={48}
         />
-        <Space direction="vertical">
+        <Flex vertical className="ml-7">
           <Text strong>{user.fullName}</Text>
-          <Text type="secondary">@{user.username}</Text>
-        </Space>
+          <Text type="secondary">{user.username}</Text>
+        </Flex>
+      </Flex>
+      <Flex vertical className="self-end">
         {actions()}
-      </Space>
-    </Space>
+      </Flex>
+    </Flex>
   );
 };
 

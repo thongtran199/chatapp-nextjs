@@ -5,6 +5,7 @@ import { Message } from '@/common/models/chat';
 import { MessageType } from '@/common/enums/messageType';
 import { selectCurrentChat } from '../selectors';
 import { Avatar, Flex } from 'antd';
+import UserOutlined from '@ant-design/icons/lib/icons/UserOutlined';
 export default function MessageItem({ message }: { message: Message }) {
   const currentChat = useSelector(selectCurrentChat);
   return (
@@ -17,7 +18,8 @@ export default function MessageItem({ message }: { message: Message }) {
       {message.messageType === MessageType.RECEIVED && (
         <Avatar
           style={{ minWidth: 'fit-content' }}
-          src={currentChat?.avatarUrl || ''}
+          src={currentChat?.avatarUrl || undefined}
+          icon={!currentChat?.avatarUrl ? <UserOutlined /> : null}
         ></Avatar>
       )}
       <Flex vertical gap={2} className="w-[80%]">

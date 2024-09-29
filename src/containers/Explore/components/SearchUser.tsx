@@ -1,13 +1,18 @@
 import { ChangeEvent, useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { useDispatch, useSelector } from '@/lib/redux';
-import { Flex, Form, FormInstance, Input } from 'antd';
-import Image from '@/components/Image';
+import { Flex, Input } from 'antd';
 import UserCollapse from './UserCollapse';
 import { searchUsersByFullNameContainingAsync } from '../thunks';
-import { setEmptyFoundUsers, setIdleStatus } from '../slice';
+import {
+  setDebouncedInputInSlice,
+  setEmptyFoundUsers,
+  setIdleStatus,
+} from '../slice';
 import { selectStatus } from '../selectors';
 import { ApiStatus } from '@/common/enums/apiStatus';
+import User from '@/services/user';
+import { UserOutlined } from '@ant-design/icons';
 
 const SearchUser = () => {
   const t = useTranslations('ExplorePage');
@@ -28,7 +33,13 @@ const SearchUser = () => {
 
   useEffect(() => {
     if (debouncedInput) {
-      dispatch(searchUsersByFullNameContainingAsync(debouncedInput));
+      dispatch(
+        searchUsersByFullNameContainingAsync({
+          userId: Number(User.getInstance().getUserId()),
+          fullName: debouncedInput,
+        }),
+      );
+      dispatch(setDebouncedInputInSlice(debouncedInput));
     }
   }, [debouncedInput, dispatch]);
 
@@ -43,16 +54,16 @@ const SearchUser = () => {
   };
 
   return (
-    <>
-      <Flex gap={8}>
-        <Input
-          placeholder={t('placeHolderInput')}
-          value={searchFullNameInput}
-          onChange={handleInputChange}
-        ></Input>
-      </Flex>
+    <Flex vertical gap={8} className="mx-5">
+      <Input
+        size="large"
+        prefix={<UserOutlined />}
+        placeholder={t('placeHolderInput')}
+        value={searchFullNameInput}
+        onChange={handleInputChange}
+      ></Input>
       {foundUserStatus !== ApiStatus.Idle && <UserCollapse />}
-    </>
+    </Flex>
   );
 };
 

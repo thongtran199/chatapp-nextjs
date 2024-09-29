@@ -19,59 +19,76 @@ export const getSentFriendsAsync = createAppAsyncThunk(
     }),
 );
 
-export const getDeclinedFriendsAsync = createAppAsyncThunk(
-  `${TypePrefix}/getDeclinedFriends`,
+export const getReceivedFriendRequestsAsync = createAppAsyncThunk(
+  `${TypePrefix}/getReceivedFriends`,
   async (userId: number) =>
-    await callApi(`friendship/declined/${userId}`, {
+    await callApi(`friendship/received/${userId}`, {
       method: 'GET',
     }),
 );
 
 export const acceptFriendRequestAsync = createAppAsyncThunk(
   `${TypePrefix}/acceptFriendRequest`,
-  async ({
-    requesterId,
-    requestedUserId,
-  }: {
-    requesterId: number;
-    requestedUserId: number;
-  }) => {
-    const registerResponse = await callApi(
-      `friendship/accept/${requesterId}/${requestedUserId}`,
+  async (friendshipId: number) => {
+    const acceptFriendRequestResponse = await callApi(
+      `friendship/accept/${friendshipId}`,
       {
         method: 'POST',
       },
     );
-    return registerResponse;
+    return acceptFriendRequestResponse;
   },
 );
 
 export const declineFriendRequestAsync = createAppAsyncThunk(
   `${TypePrefix}/declineFriendRequest`,
-  async ({
-    requesterId,
-    requestedUserId,
-  }: {
-    requesterId: number;
-    requestedUserId: number;
-  }) => {
-    const registerResponse = await callApi(
-      `friendship/decline/${requesterId}/${requestedUserId}`,
+  async (friendshipId: number) => {
+    const declineFriendRequestResponse = await callApi(
+      `friendship/decline/${friendshipId}`,
       {
         method: 'POST',
       },
     );
-    return registerResponse;
+    return declineFriendRequestResponse;
   },
 );
 
 export const sendFriendRequestAsync = createAppAsyncThunk(
   `${TypePrefix}/sendFriendRequest`,
   async (addFriendRequest: AddFriendRequest) => {
-    const sendFriendRequestResponse = await callApi(`friendship/request`, {
-      method: 'POST',
-      body: JSON.stringify(addFriendRequest),
-    });
+    const sendFriendRequestResponse = await callApi(
+      `friendship/send-friend-request`,
+      {
+        method: 'POST',
+        body: JSON.stringify(addFriendRequest),
+      },
+    );
     return sendFriendRequestResponse;
+  },
+);
+
+export const revokeFriendRequestAsync = createAppAsyncThunk(
+  `${TypePrefix}/revokeFriendRequest`,
+  async (friendshipId: number) => {
+    const revokeFriendRequestResponse = await callApi(
+      `friendship/revoke/${friendshipId}`,
+      {
+        method: 'POST',
+      },
+    );
+    return revokeFriendRequestResponse;
+  },
+);
+
+export const unFriendAsync = createAppAsyncThunk(
+  `${TypePrefix}/unFriend`,
+  async ({ userId1, userId2 }: { userId1: number; userId2: number }) => {
+    const unFriendResponse = await callApi(
+      `friendship/unfriend/${userId1}/${userId2}`,
+      {
+        method: 'POST',
+      },
+    );
+    return unFriendResponse;
   },
 );

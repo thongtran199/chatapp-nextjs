@@ -1,13 +1,11 @@
 'use client';
 
-import { Collapse } from 'antd';
-import { Flex } from '@/components/Flex';
-import { Text } from '@/components/Text';
+import { Collapse, Flex } from 'antd';
 import { useTranslations } from 'next-intl';
 
 import FriendsComponent from './components/FriendsComponent';
 import SentFriendsComponent from './components/SentFriendsComponent';
-import DeclinedFriendsComponent from './components/DeclinedFriendsComponent';
+import ReceivedFriendRequestsComponent from './components/ReceivedFriendRequestsComponent';
 
 export default function Friend() {
   const t = useTranslations('FriendPage');
@@ -24,16 +22,14 @@ export default function Friend() {
     },
     {
       key: '3',
-      label: t('declinedRequests'),
-      children: <DeclinedFriendsComponent />,
+      label: t('receivedFriendRequests'),
+      children: <ReceivedFriendRequestsComponent />,
     },
   ];
 
   return (
     <Flex vertical justify="start" className="w-full" gap={16}>
-      <Text>{t('friendListTitle')}</Text>
-
-      <Collapse items={items} defaultActiveKey={['1']} accordion />
+      <Collapse items={items} defaultActiveKey={['1', '2', '3']} />
     </Flex>
   );
 }

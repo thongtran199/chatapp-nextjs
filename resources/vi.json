@@ -22,10 +22,35 @@
     "rePasswordNotMatch": "Mật khẩu xác nhận không trùng !",
     "openAccountNow": "Đăng ký ngay"
   },
+  "SignInPage": {
+    "signInToChatApp": "Đăng nhập",
+    "password": "Mật khẩu",
+    "usernameOrEmail": "Username hoặc Email",
+    "usernameOrEmailRequiredValidation": "Vui lòng nhập đúng định dạng email",
+    "passwordRequiredValidation": "Vui lòng nhập mật khẩu",
+    "passwordFormatValidation": "Vui lòng nhập đúng định dạng mật khẩu Mật khẩu tối thiểu 8 ký tự, bao gồm ít nhất 1 hoa, 1 thường và 1 ký tự đặc biệt",
+    "signInNow": "Đăng ký ngay"
+  },
+
   "AccessDeniedPage": {
     "title": "Bạn không có quyền truy cập trang này",
     "buttonLabel": "Trang chủ"
   },
+  "ExplorePage": {
+    "title": "Kết bạn mới nào !",
+    "placeHolderInput": "Nhập tên cần tìm",
+    "foundUserList": "Các người dùng được tìm thấy"
+  },
+  "ChatPage": {
+    "title": "Talkie Messenger"
+  },
+  "FriendPage": {
+    "title": "Các mối quan hệ của bạn",
+    "friendList": "Đã kết nối",
+    "pendingRequests": "Đang chờ đối phương xác nhận",
+    "receivedFriendRequests": "Lời mời kết bạn"
+  },
+
   "Layout": {
     "signUp": "Đăng ký ngay"
   },

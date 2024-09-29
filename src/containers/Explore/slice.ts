@@ -10,11 +10,13 @@ import { searchUsersByFullNameContainingAsync } from './thunks';
 export interface ExploreSliceState {
   status: ApiStatus;
   foundUsers: FoundUser[];
+  debouncedInput: string;
 }
 
 const initialState: ExploreSliceState = {
   status: ApiStatus.Idle,
   foundUsers: [],
+  debouncedInput: '',
 };
 
 export const exploreSlice = createSlice({
@@ -27,13 +29,17 @@ export const exploreSlice = createSlice({
     setEmptyFoundUsers(state) {
       state.foundUsers = [];
     },
+    setDebouncedInputInSlice(state, action: PayloadAction<string>) {
+      state.debouncedInput = action.payload;
+    },
   },
   extraReducers(builder) {
     findFriendsByUsernameOrEmail(builder);
   },
 });
 
-export const { setIdleStatus, setEmptyFoundUsers } = exploreSlice.actions;
+export const { setIdleStatus, setEmptyFoundUsers, setDebouncedInputInSlice } =
+  exploreSlice.actions;
 
 function findFriendsByUsernameOrEmail(
   builder: ActionReducerMapBuilder<ExploreSliceState>,

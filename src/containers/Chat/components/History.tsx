@@ -17,9 +17,10 @@ export default function History() {
   }, []);
 
   return (
-    <div className="flex flex-col justify-between h-full p-2 bg-slate-50">
+    <div className="flex grow flex-col justify-between h-full p-2 bg-slate-50">
       <div className="flex-1 overflow-y-auto mt-5">
-        <Flex vertical className="gap-1 mt-2">
+        <p className="ml-3 text-lg">Lịch sử nhắn tin</p>
+        <Flex vertical className="gap-1 mt-2 grow">
           {chatHistory.map((chatHistory) => {
             return (
               <ChatHistoryItem key={uniqueId()} chatHistory={chatHistory} />

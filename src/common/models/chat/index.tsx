@@ -7,7 +7,7 @@ export interface MessageRequest {
 }
 
 export interface ChatHistory {
-  userId: number;
+  partnerId: number;
   fullName: string;
   username: string;
   avatarUrl: string;
@@ -16,7 +16,10 @@ export interface ChatHistory {
 
 export interface LatestMessage {
   content: string;
-  createdAt: string;
+  sentAt: string;
+  messageId: number;
+  messageSenderId: number;
+  read: boolean;
 }
 
 export interface MessageSenderReceiverResponseDTO {
@@ -27,7 +30,7 @@ export interface MessageResponseDTO {
   messageSender: MessageSenderReceiverResponseDTO;
   messageReceiver: MessageSenderReceiverResponseDTO;
   content: string;
-  createdAt: string;
+  sentAt: string;
   read: boolean;
 }
 

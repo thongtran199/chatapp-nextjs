@@ -1,13 +1,8 @@
 'use client';
 
-import { Input, Select, Form } from 'antd';
-import { Flex } from '@/components/Flex';
-import { Text } from '@/components/Text';
+import { Input, Form, Flex, Button } from 'antd';
 import { useTranslations } from 'next-intl';
-import CheckBox from '@/components/Checkbox';
 import { ArrowRightOutlined } from '@ant-design/icons';
-import { Button } from '@/components/Button';
-import { Link } from '@/components/Navigation';
 import { FormProps } from 'antd/lib';
 import { useForm } from 'antd/es/form/Form';
 import { signUpAsync } from './thunks';

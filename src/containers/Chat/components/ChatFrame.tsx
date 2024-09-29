@@ -1,12 +1,15 @@
 'use client';
 import { Button, Flex, Input, Spin } from 'antd';
 import { useState, useEffect, useRef } from 'react';
-import { uniqueId } from 'lodash';
 import React from 'react';
 import { useDispatch, useSelector } from '@/lib/redux';
 
 import { selectConversation, selectCurrentChat } from '../selectors';
-import { getConversationAsync, sendMessageAsync } from '../thunks';
+import {
+  getChatHistoryAsync,
+  getConversationAsync,
+  sendMessageAsync,
+} from '../thunks';
 import { Message } from '@/common/models/chat';
 import TextArea from 'antd/lib/input/TextArea';
 import User from '@/services/user';
@@ -14,6 +17,7 @@ import Header from './Header';
 import { UpOutlined } from '@ant-design/icons/lib/icons';
 import MessageItem from './MessageItem';
 import { MessageType } from '@/common/enums/messageType';
+import Image from '@/components/Image';
 
 export default function ChatFrame() {
   const [textAreaValue, setTextAreaValue] = useState<string>('');
@@ -29,23 +33,7 @@ export default function ChatFrame() {
         return;
       } else {
         e.preventDefault();
-        const input = textAreaValue.trim();
-        if (input !== '') {
-          dispatch(
-            sendMessageAsync({
-              content: input,
-              messageSenderId: Number(User.getInstance().getUserId()),
-              messageReceiverId: currentChat?.userId,
-            }),
-          );
-          dispatch(
-            getConversationAsync({
-              senderId: Number(User.getInstance().getUserId()),
-              receiverId: currentChat?.userId || -1,
-            }),
-          );
-          setTextAreaValue('');
-        }
+        handleSendMessage();
       }
     }
   };
@@ -60,7 +48,7 @@ export default function ChatFrame() {
           ? MessageType.SEND
           : MessageType.RECEIVED,
       content: msg.content,
-      createdAt: msg.createdAt,
+      createdAt: msg.sentAt,
       read: msg.read,
     }));
 
@@ -70,20 +58,23 @@ export default function ChatFrame() {
   const handleSendMessage = async () => {
     const input = textAreaValue.trim();
     if (input !== '') {
-      dispatch(
+      const resultAction = await dispatch(
         sendMessageAsync({
           content: input,
           messageSenderId: Number(User.getInstance().getUserId()),
-          messageReceiverId: currentChat?.userId,
+          messageReceiverId: currentChat?.partnerId,
         }),
       );
-      dispatch(
-        getConversationAsync({
-          senderId: Number(User.getInstance().getUserId()),
-          receiverId: currentChat?.userId || -1,
-        }),
-      );
-      setTextAreaValue('');
+      if (sendMessageAsync.fulfilled.match(resultAction)) {
+        dispatch(
+          getConversationAsync({
+            senderId: Number(User.getInstance().getUserId()),
+            receiverId: currentChat?.partnerId || -1,
+          }),
+        );
+        dispatch(getChatHistoryAsync(Number(User.getInstance().getUserId())));
+        setTextAreaValue('');
+      }
     }
   };
 
@@ -92,19 +83,33 @@ export default function ChatFrame() {
   };
 
   return (
-    <div className="flex flex-col justify-between h-full">
-      <div className="px-4 py-2">
+    <div className="flex flex-col justify-between h-full grow">
+      <div className="px-4 py-2 bg-gray-200">
         <Header />
       </div>
-      <div className="h-3 my-2 bg-slate-50"></div>
-      <div className="px-4 py-2 flex-1 overflow-y-auto">
-        {messages.map((message: any) => (
-          <div key={message.messageId}>
-            <MessageItem message={message} />
-          </div>
-        ))}
-      </div>
-      <div className="pb-4 pt-2 flex items-center bg-slate-50">
+      {messages.length <= 0 && (
+        <Flex vertical align="center" justify="center" gap={10}>
+          <Image
+            src="/images/TalkieLogo.png"
+            width={100}
+            height={100}
+            alt="Logo"
+          ></Image>
+          <p className="text-lg">
+            Các bạn chưa có tin nhắn nào, làm quen ngay!
+          </p>
+        </Flex>
+      )}
+      {messages.length > 0 && (
+        <div className="px-4 py-2 flex-1 overflow-y-auto">
+          {messages.map((message: any) => (
+            <div key={message.messageId}>
+              <MessageItem message={message} />
+            </div>
+          ))}
+        </div>
+      )}
+      <div className="pb-4 pt-2 px-3 flex items-center bg-slate-50">
         <TextArea
           value={textAreaValue}
           onChange={handleInputChange}
@@ -117,6 +122,7 @@ export default function ChatFrame() {
           onClick={handleSendMessage}
           type="primary"
           shape="circle"
+          className="ml-2"
           icon={<UpOutlined />}
         />
       </div>

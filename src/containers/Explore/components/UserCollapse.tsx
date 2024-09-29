@@ -1,7 +1,11 @@
 import React from 'react';
 import { useTranslations } from 'next-intl';
-import { useSelector } from '@/lib/redux';
-import { selectFoundUsers, selectStatus } from '../selectors';
+import { useDispatch, useSelector } from '@/lib/redux';
+import {
+  selectDebouncedInput,
+  selectFoundUsers,
+  selectStatus,
+} from '../selectors';
 import { Collapse, Flex, Space, Spin } from 'antd';
 import { uniqueId } from 'lodash';
 import theme from '@/theme';
@@ -9,11 +13,16 @@ import { applyConditionalStyle } from '@/utils/style';
 import { FoundUser } from '@/common/models/explore';
 import { ApiStatus } from '@/common/enums/apiStatus';
 import FoundUserItem from './FoundUserItem';
+import { searchUsersByFullNameContainingAsync } from '../thunks';
+import User from '@/services/user';
 
 const UserCollapse = () => {
   const t = useTranslations('ExplorePage');
   const foundUserStatus = useSelector(selectStatus);
   const foundUsers = useSelector(selectFoundUsers);
+  const debouncedInput = useSelector(selectDebouncedInput);
+  const dispatch = useDispatch();
+
   const getChildren = (): React.ReactNode => {
     if (foundUserStatus === ApiStatus.Loading) {
       return (
@@ -35,7 +44,18 @@ const UserCollapse = () => {
                 }),
               }}
             >
-              <FoundUserItem user={user} />
+              <FoundUserItem
+                key={uniqueId()}
+                user={user}
+                callDispatch={() => {
+                  dispatch(
+                    searchUsersByFullNameContainingAsync({
+                      userId: Number(User.getInstance().getUserId()),
+                      fullName: debouncedInput,
+                    }),
+                  );
+                }}
+              />
             </div>
           ))}
         </Space>
@@ -44,6 +64,7 @@ const UserCollapse = () => {
       return null;
     }
   };
+
   const collapseItems: [
     { key: string | number; label: React.ReactNode; children: React.ReactNode },
   ] = [

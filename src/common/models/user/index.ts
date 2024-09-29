@@ -1,12 +1,10 @@
 export interface User {
-  id: number;
-  avatar: string;
+  userId: number;
+  avatarUrl: string;
   fullName: string;
-  firstName: string;
-  lastName: string;
+  username: string;
+  email: string;
 }
-
-
 
 export interface UserRefreshToken {
   accessToken: string;

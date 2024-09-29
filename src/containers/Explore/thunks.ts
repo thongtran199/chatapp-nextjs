@@ -5,8 +5,8 @@ export const TypePrefix = 'explore';
 
 export const searchUsersByFullNameContainingAsync = createAppAsyncThunk(
   `${TypePrefix}/searchUsersByFullNameContaining`,
-  async (fullName: string) =>
-    await callApi(`user/search?fullName=${fullName}`, {
+  async ({ fullName, userId }: { fullName: string; userId: number }) =>
+    await callApi(`user/search?fullName=${fullName}&userId=${userId}`, {
       method: 'GET',
     }),
 );

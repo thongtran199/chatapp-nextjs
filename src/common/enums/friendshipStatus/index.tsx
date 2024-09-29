@@ -1,6 +1,7 @@
 export enum FriendshipStatus {
-  NONE,
-  PENDING,
-  ACCEPTED,
-  DECLINED,
+  PENDING = 'PENDING',
+  ACCEPTED = 'ACCEPTED',
+  DECLINED = 'DECLINED',
+  REVOKED = 'REVOKED',
+  UNFRIEND = 'UNFRIEND',
 }

@@ -8,19 +8,20 @@ import { Friend } from '@/common/models/friend';
 import {
   acceptFriendRequestAsync,
   declineFriendRequestAsync,
-  getDeclinedFriendsAsync,
   getFriendsAsync,
+  getReceivedFriendRequestsAsync,
   getSentFriendsAsync,
   sendFriendRequestAsync,
 } from './thunks';
+import { FoundUser } from '@/common/models/explore';
 
 export interface FriendSliceState {
   acceptStatus: ApiStatus;
   declineStatus: ApiStatus;
   sendFriendRequestStatus: ApiStatus;
-  friends: Friend[];
-  sentFriends: Friend[];
-  declinedFriends: Friend[];
+  friends: FoundUser[];
+  sentFriends: FoundUser[];
+  receivedFriendRequests: FoundUser[];
 }
 
 const initialState: FriendSliceState = {
@@ -29,7 +30,7 @@ const initialState: FriendSliceState = {
   sendFriendRequestStatus: ApiStatus.Idle,
   friends: [],
   sentFriends: [],
-  declinedFriends: [],
+  receivedFriendRequests: [],
 };
 
 export const friendSlice = createSlice({
@@ -39,7 +40,7 @@ export const friendSlice = createSlice({
   extraReducers(builder) {
     setFriends(builder);
     setSentFriends(builder);
-    setDeclinedFriends(builder);
+    setReceivedFriendRequests(builder);
     acceptFriendRequest(builder);
     declineFriendRequest(builder);
     sendFriendRequest(builder);
@@ -64,13 +65,13 @@ function setSentFriends(builder: ActionReducerMapBuilder<FriendSliceState>) {
   );
 }
 
-function setDeclinedFriends(
+function setReceivedFriendRequests(
   builder: ActionReducerMapBuilder<FriendSliceState>,
 ) {
   builder.addCase(
-    getDeclinedFriendsAsync.fulfilled,
+    getReceivedFriendRequestsAsync.fulfilled,
     (state: FriendSliceState, action: PayloadAction<Friend[]>) => {
-      state.declinedFriends = action.payload;
+      state.receivedFriendRequests = action.payload;
     },
   );
 }

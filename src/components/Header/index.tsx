@@ -22,8 +22,6 @@ const { Header: HeaderLayout } = Layout;
 
 interface HeaderProps {
   userInfo: User;
-  collapsedSidebar: boolean;
-  setCollapsedSidebar: (collapsed: boolean) => void;
 }
 
 const items: MenuProps['items'] = [
@@ -33,11 +31,7 @@ const items: MenuProps['items'] = [
   },
 ];
 
-export const Header = ({
-  userInfo,
-  collapsedSidebar,
-  setCollapsedSidebar,
-}: HeaderProps) => {
+export const Header = ({ userInfo }: HeaderProps) => {
   const [openDropdown, setOpenDropdown] = useState(false);
   const router = useRouter();
   const toggleDropdown = useCallback(() => {
@@ -95,6 +89,7 @@ export const Header = ({
           menu={{ items }}
           trigger={['click']}
           onOpenChange={toggleDropdown}
+          className="cursor-pointer"
         >
           <Space>
             <div className="flex justify-center items-center gap-2">

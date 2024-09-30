@@ -5,5 +5,5 @@ const TypePrefix = 'user';
 
 export const getUserAsync = createAppAsyncThunk(
   `${TypePrefix}/getUser`,
-  async () => await callApi('users/get-me'),
+  async () => await callApi('user/get-me'),
 );

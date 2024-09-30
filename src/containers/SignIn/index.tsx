@@ -43,7 +43,7 @@ export default function SignIn() {
     errorInfo,
   ) => errorInfo;
   return (
-    <AuthenticatedLayout>
+    <div>
       <ModalView
         visible={modalVisible}
         setVisible={setModalVisible}
@@ -53,13 +53,14 @@ export default function SignIn() {
       <Flex
         vertical
         align="center"
-        className="overflow-hidden relative pb-20 w-full"
+        justify="center"
+        className="overflow-hidden relative pb-20 w-full h-[100vh] mt-5"
       >
         <Form
           name="signInForm"
           className="w-1/3"
           colon={false}
-          labelCol={{ flex: '150px' }}
+          labelCol={{ flex: '200px' }}
           labelAlign="left"
           form={form}
           onFinish={onFinish}
@@ -87,17 +88,14 @@ export default function SignIn() {
               <Form.Item
                 label={t('password')}
                 name="password"
-                rules={[
-                  {
-                    required: true,
-                    message: t('passwordRequiredValidation'),
-                  },
-                  {
-                    pattern:
-                      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-                    message: t('passwordFormatValidation'),
-                  },
-                ]}
+                rules={
+                  [
+                    // {
+                    //   required: true,
+                    //   message: t('passwordRequiredValidation'),
+                    // },
+                  ]
+                }
               >
                 <Input.Password maxLength={50} placeholder={t('password')} />
               </Form.Item>
@@ -113,7 +111,7 @@ export default function SignIn() {
                     className="mt-2"
                     style={{ padding: '0px 80px' }}
                   >
-                    {t('signInNow')}
+                    Đăng nhập
                   </Button>
                 </Flex>
               </Form.Item>
@@ -121,6 +119,6 @@ export default function SignIn() {
           </Flex>
         </Form>
       </Flex>
-    </AuthenticatedLayout>
+    </div>
   );
 }

@@ -5,7 +5,11 @@ import {
   createSlice,
 } from '@reduxjs/toolkit';
 
-import { ChatHistory, MessageResponseDTO } from '@/common/models/chat';
+import {
+  ChatHistory,
+  CurrentChat,
+  MessageResponseDTO,
+} from '@/common/models/chat';
 import {
   getChatHistoryAsync,
   getConversationAsync,
@@ -17,25 +21,30 @@ export interface ChatSliceState {
   getConversationStatus: ApiStatus;
   getChatHistoryStatus: ApiStatus;
   chatHistory: ChatHistory[];
+  currentChat: CurrentChat | undefined;
   conversation: MessageResponseDTO[];
-  currentChat: ChatHistory | undefined;
+  chatFrameIsOpening: boolean;
 }
 
 const initialState: ChatSliceState = {
   sendMessageStatus: ApiStatus.Idle,
   getConversationStatus: ApiStatus.Idle,
   getChatHistoryStatus: ApiStatus.Idle,
-  conversation: [],
   chatHistory: [],
   currentChat: undefined,
+  chatFrameIsOpening: false,
+  conversation: [],
 };
 
 export const chatSlice = createSlice({
   name: 'chat',
   initialState,
   reducers: {
-    setCurrentChat(state, action: PayloadAction<ChatHistory | undefined>) {
+    setCurrentChat(state, action: PayloadAction<CurrentChat>) {
       state.currentChat = action.payload;
+    },
+    setChatFrameIsOpening(state, action: PayloadAction<boolean>) {
+      state.chatFrameIsOpening = action.payload;
     },
   },
   extraReducers(builder) {
@@ -45,7 +54,7 @@ export const chatSlice = createSlice({
   },
 });
 
-export const { setCurrentChat } = chatSlice.actions;
+export const { setCurrentChat, setChatFrameIsOpening } = chatSlice.actions;
 
 function getConversation(builder: ActionReducerMapBuilder<ChatSliceState>) {
   builder.addCase(

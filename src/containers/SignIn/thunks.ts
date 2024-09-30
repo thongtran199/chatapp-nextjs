@@ -2,13 +2,13 @@ import { SignInRequest } from '@/common/models/signIn';
 import { createAppAsyncThunk } from '@/lib/redux/createAppAsyncThunk';
 import callApi from '@/utils/api';
 
-export const TypePrefix = 'user';
+export const TypePrefix = 'auth';
 
 export const signInAsync = createAppAsyncThunk(
-  `${TypePrefix}/signIn`,
+  `${TypePrefix}/login`,
   async (signInRequest: SignInRequest) => {
     const loginResponse = await callApi(
-      'auth/signIn',
+      'auth/login',
       {
         method: 'POST',
         body: JSON.stringify(signInRequest),

@@ -10,7 +10,7 @@ export default async function callApi(
   path: string,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   options: any = {},
-  needAuthentication = false,
+  needAuthentication = true,
 ) {
   const url = `${BASE_API_URL}${path}`;
   options.headers = await buildHeaders(options, needAuthentication);

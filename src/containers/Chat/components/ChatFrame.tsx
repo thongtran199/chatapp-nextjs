@@ -4,7 +4,11 @@ import { useState, useEffect, useRef } from 'react';
 import React from 'react';
 import { useDispatch, useSelector } from '@/lib/redux';
 
-import { selectConversation, selectCurrentChat } from '../selectors';
+import {
+  selectChatFrameIsOpening,
+  selectConversation,
+  selectCurrentChat,
+} from '../selectors';
 import {
   getChatHistoryAsync,
   getConversationAsync,
@@ -18,6 +22,9 @@ import { UpOutlined } from '@ant-design/icons/lib/icons';
 import MessageItem from './MessageItem';
 import { MessageType } from '@/common/enums/messageType';
 import Image from '@/components/Image';
+import { useSubscription } from 'react-stomp-hooks';
+import { NotificationSocketDTO } from '@/common/models/notification';
+import { setChatFrameIsOpening } from '../slice';
 
 export default function ChatFrame() {
   const [textAreaValue, setTextAreaValue] = useState<string>('');
@@ -26,6 +33,27 @@ export default function ChatFrame() {
   const dispatch = useDispatch();
 
   const [messages, setMessages] = useState<Message[]>([]);
+
+  useSubscription(
+    `/queue/message-${User.getInstance().getUserId()}`,
+    async (receivedFrame: any) => {
+      const binaryBody = receivedFrame._binaryBody;
+      const decoder = new TextDecoder('utf-8');
+      const jsonString = decoder.decode(binaryBody);
+      const notification: NotificationSocketDTO = JSON.parse(jsonString);
+      if (notification.partnerId == currentChat?.chatHistory.partnerId) {
+        const resultAction = await dispatch(
+          getConversationAsync({
+            senderId: Number(User.getInstance().getUserId()),
+            receiverId: currentChat?.chatHistory.partnerId,
+          }),
+        );
+        if (getConversationAsync.fulfilled.match(resultAction)) {
+          dispatch(getChatHistoryAsync(Number(User.getInstance().getUserId())));
+        }
+      }
+    },
+  );
 
   const handleKeyDown = async (e: any) => {
     if (e.key === 'Enter') {
@@ -55,6 +83,14 @@ export default function ChatFrame() {
     setMessages(convertedMessages);
   }, [conversation]);
 
+  useEffect(() => {
+    dispatch(setChatFrameIsOpening(true));
+
+    return () => {
+      dispatch(setChatFrameIsOpening(false));
+    };
+  }, []);
+
   const handleSendMessage = async () => {
     const input = textAreaValue.trim();
     if (input !== '') {
@@ -62,14 +98,14 @@ export default function ChatFrame() {
         sendMessageAsync({
           content: input,
           messageSenderId: Number(User.getInstance().getUserId()),
-          messageReceiverId: currentChat?.partnerId,
+          messageReceiverId: currentChat?.chatHistory.partnerId,
         }),
       );
       if (sendMessageAsync.fulfilled.match(resultAction)) {
         dispatch(
           getConversationAsync({
             senderId: Number(User.getInstance().getUserId()),
-            receiverId: currentChat?.partnerId || -1,
+            receiverId: currentChat?.chatHistory.partnerId || -1,
           }),
         );
         dispatch(getChatHistoryAsync(Number(User.getInstance().getUserId())));
@@ -114,7 +150,7 @@ export default function ChatFrame() {
           value={textAreaValue}
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
-          placeholder={`Message to ${currentChat?.fullName || ''}`}
+          placeholder={`Message to ${currentChat?.chatHistory.fullName || ''}`}
           autoSize={{ minRows: 2, maxRows: 5 }}
           className="flex-grow mr-4"
         />

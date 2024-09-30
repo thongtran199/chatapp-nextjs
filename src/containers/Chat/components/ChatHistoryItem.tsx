@@ -1,6 +1,6 @@
 'use client';
-import React, { useEffect, useState } from 'react';
-import { Avatar, Button, Flex, Space, Typography } from 'antd';
+import React from 'react';
+import { Avatar, Flex, Space, Typography } from 'antd';
 import { useDispatch, useSelector } from '@/lib/redux';
 
 import { ChatHistory } from '@/common/models/chat';
@@ -8,11 +8,8 @@ import { getConversationAsync } from '../thunks';
 import User from '@/services/user';
 import { UserOutlined } from '@ant-design/icons';
 import { setCurrentChat } from '../slice';
-import {
-  DatetimeFormat,
-  formatDate,
-  MonthDayYearTimeFormat,
-} from '@/utils/date';
+import { DatetimeFormat, formatDate } from '@/utils/date';
+import { selectConversation } from '../selectors';
 
 const Text = Typography.Text;
 
@@ -22,15 +19,23 @@ export default function ChatHistoryItem({
   chatHistory: ChatHistory;
 }) {
   const dispatch = useDispatch();
+  const conversation = useSelector(selectConversation);
 
-  const handleClick = () => {
-    dispatch(
+  const handleClick = async () => {
+    const resultAction = await dispatch(
       getConversationAsync({
         senderId: Number(User.getInstance().getUserId()),
         receiverId: chatHistory.partnerId,
       }),
     );
-    dispatch(setCurrentChat(chatHistory));
+    if (getConversationAsync.fulfilled.match(resultAction)) {
+      dispatch(
+        setCurrentChat({
+          chatHistory: chatHistory,
+          conversation: conversation,
+        }),
+      );
+    }
   };
 
   return (

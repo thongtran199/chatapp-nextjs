@@ -14,6 +14,10 @@ export interface ChatHistory {
   latestMessage: LatestMessage | null;
 }
 
+export interface CurrentChat {
+  chatHistory: ChatHistory;
+  conversation: MessageResponseDTO[];
+}
 export interface LatestMessage {
   content: string;
   sentAt: string;

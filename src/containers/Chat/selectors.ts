@@ -15,3 +15,6 @@ export const selectGetChatHistoryStatus = (state: ReduxState) =>
 export const selectChatHistory = (state: ReduxState) => state.chat.chatHistory;
 
 export const selectCurrentChat = (state: ReduxState) => state.chat.currentChat;
+
+export const selectChatFrameIsOpening = (state: ReduxState) =>
+  state.chat.chatFrameIsOpening;

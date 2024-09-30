@@ -1,6 +1,6 @@
 'use client';
 
-import { useDispatch, useSelector } from '@/lib/redux';
+import { useSelector } from '@/lib/redux';
 import { Message } from '@/common/models/chat';
 import { MessageType } from '@/common/enums/messageType';
 import { selectCurrentChat } from '../selectors';
@@ -18,8 +18,8 @@ export default function MessageItem({ message }: { message: Message }) {
       {message.messageType === MessageType.RECEIVED && (
         <Avatar
           style={{ minWidth: 'fit-content' }}
-          src={currentChat?.avatarUrl || undefined}
-          icon={!currentChat?.avatarUrl ? <UserOutlined /> : null}
+          src={currentChat?.chatHistory.avatarUrl || undefined}
+          icon={!currentChat?.chatHistory.avatarUrl ? <UserOutlined /> : null}
         ></Avatar>
       )}
       <Flex vertical gap={2} className="w-[80%]">

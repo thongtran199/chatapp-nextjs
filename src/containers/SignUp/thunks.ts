@@ -2,7 +2,7 @@ import { AccountSignUp } from '@/common/models/signUp';
 import { createAppAsyncThunk } from '@/lib/redux/createAppAsyncThunk';
 import callApi from '@/utils/api';
 
-export const TypePrefix = 'user';
+export const TypePrefix = 'auth';
 
 export const signUpAsync = createAppAsyncThunk(
   `${TypePrefix}/signUp`,

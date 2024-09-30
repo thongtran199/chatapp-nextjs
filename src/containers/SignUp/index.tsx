@@ -56,7 +56,7 @@ export default function SignUp() {
     errorInfo,
   ) => errorInfo;
   return (
-    <AuthenticatedLayout>
+    <div>
       <ModalView
         visible={modalVisible}
         setVisible={setModalVisible}
@@ -66,7 +66,8 @@ export default function SignUp() {
       <Flex
         vertical
         align="center"
-        className="overflow-hidden relative pb-20 w-full"
+        justify="center"
+        className="overflow-hidden relative pb-20 w-full h-[100vh] mt-5"
       >
         <Form
           name="signUpForm"
@@ -175,6 +176,6 @@ export default function SignUp() {
           </Flex>
         </Form>
       </Flex>
-    </AuthenticatedLayout>
+    </div>
   );
 }

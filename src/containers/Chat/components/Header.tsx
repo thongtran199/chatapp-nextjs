@@ -1,5 +1,4 @@
 'use client';
-import Image from '@/components/Image';
 import { useSelector } from '@/lib/redux';
 import { Avatar, Flex } from 'antd';
 import React from 'react';
@@ -13,11 +12,13 @@ export default function Header() {
     <Flex justify="space-between">
       <Flex justify="flex-start" align="center">
         <Avatar
-          src={currentChat?.avatarUrl || undefined}
-          icon={!currentChat?.avatarUrl ? <UserOutlined /> : null}
+          src={currentChat?.chatHistory.avatarUrl || undefined}
+          icon={!currentChat?.chatHistory.avatarUrl ? <UserOutlined /> : null}
           size={48}
         />
-        <p className="ml-10 text-[1rem] font-bold">{currentChat?.fullName}</p>
+        <p className="ml-10 text-[1rem] font-bold">
+          {currentChat?.chatHistory.username}
+        </p>
       </Flex>
     </Flex>
   );
